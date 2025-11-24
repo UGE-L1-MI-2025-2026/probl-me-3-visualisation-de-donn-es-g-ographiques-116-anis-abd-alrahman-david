@@ -142,3 +142,9 @@ Il est également possible d'explorer :
 - d'autres méthodes d'accès aux données (par exemple dynamiquement à l'aide d'API et de bibliothèques dédiées) ;
 - d'autres échelles géographiques (quartier, commune, région, pays, continent, monde) ;
 - d'autres types de données (végétation, pollution, démographie, santé, culture, trafic, célébrités, réseaux sociaux ou media...) ;
+
+-Lire les données géographiques
+
+-Lire les données numériques
+
+-Visualiser sur la carte avec FLTK
