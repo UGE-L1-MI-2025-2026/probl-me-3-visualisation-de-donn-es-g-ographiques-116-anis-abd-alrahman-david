@@ -1,11 +1,15 @@
 from fltk import *
 import shapefile
 
-sf = shapefile.Reader("departements-20180101")
-reco = sf.records()
+def fichier(nom_fichier):
+    sf = shapefile.Reader(nom_fichier)
+    reco = sf.records()
+    return sf , reco
+
 outremer = ['974', '972', '971', '973', '976']
 
-def bbox_france():
+def bbox_x(nom):
+    sf , reco = fichier(nom)
     min_x = float('inf')
     min_y = float('inf')
     max_x = float('-inf')
@@ -22,11 +26,15 @@ def bbox_france():
             continue
     return min_x , min_y , max_x, max_y
 
-min_x , min_y , max_x, max_y = bbox_france()
 
-def carte():
-    cree_fenetre(1000,1000)
-
+def carte(nom):
+    min_x , min_y , max_x, max_y = bbox_x(nom)
+    sf , reco = fichier(nom)
+    if nom == "france":
+        longeur = 600 
+    else:
+        longeur = 1000
+    cree_fenetre(longeur,600)
     for i in range(len(reco)):
         if reco[i][0] not in outremer:
             dep = sf.shape(i)
@@ -40,8 +48,8 @@ def carte():
 
                 for j in range(debut,fin):
                     point = dep.points[j]
-                    x = (point[0] - min_x) / (max_x - min_x) * 900
-                    y = (max_y - point[1]) / (max_y - min_y) * 900
+                    x = (point[0] - min_x) / (max_x - min_x) * longeur
+                    y = (max_y - point[1]) / (max_y - min_y) * 600
                     coo.append([x,y])
                 polygone(coo,couleur="black")
         else:
