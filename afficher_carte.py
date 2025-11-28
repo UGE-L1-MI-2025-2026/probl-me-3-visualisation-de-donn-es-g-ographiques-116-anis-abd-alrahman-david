@@ -57,3 +57,4 @@ def carte(nom):
 
     attend_ev()
     ferme_fenetre()
+carte("france")
