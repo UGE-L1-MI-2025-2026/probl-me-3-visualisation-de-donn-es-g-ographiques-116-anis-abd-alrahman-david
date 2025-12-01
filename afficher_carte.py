@@ -2,13 +2,14 @@ from fltk import *
 import shapefile
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from temperature import *
 
 def fichier(nom_fichier):
     sf = shapefile.Reader(nom_fichier)
     reco = sf.records()
     return sf , reco
 
-outremer = ['974', '972', '971', '973', '976']
+outremer = ['974', '972', '971', '973', '976',"69D",'69M']
 
 def bbox_x(nom):
     sf , reco = fichier(nom)
@@ -38,12 +39,12 @@ def palette_temp(longeur, hauteur_fenetre):
         hex_color = mcolors.to_hex(rgba)
         
         rectangle(longeur - 10, i * bande, longeur, (i + 1) * bande,remplissage=hex_color, couleur=hex_color)
-    y1 = 0
-    temp = 0
-    for i in range(8):
-        texte(longeur - 35, y1, f"{temp}°-", taille=10)
-        y1 += hauteur_fenetre / 8 
-        temp += 5
+        y1 = 0
+        if y1 == 5:
+            texte(longeur - 35, i * bande, f"{value}°-", taille=10)
+        y1 += 1
+
+
 
 
 def carte(nom):
@@ -71,7 +72,7 @@ def carte(nom):
                     x = (point[0] - min_x) / (max_x - min_x) * longeur
                     y = (max_y - point[1]) / (max_y - min_y) * 600
                     coo.append([x,y])
-                polygone(coo,couleur="black",remplissage="red")
+                polygone(coo,couleur="black",remplissage=couleur(reco[i][0],'tmax'))
         else:
             continue
 
