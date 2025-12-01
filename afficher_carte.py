@@ -1,5 +1,7 @@
 from fltk import *
 import shapefile
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 def fichier(nom_fichier):
     sf = shapefile.Reader(nom_fichier)
@@ -26,6 +28,23 @@ def bbox_x(nom):
             continue
     return min_x , min_y , max_x, max_y
 
+def palette_temp(longeur, hauteur_fenetre):
+    cmap = plt.get_cmap('plasma')
+    bande = 5 
+    n = hauteur_fenetre // bande 
+    for i in range(n):
+        value = i / (n - 1)
+        rgba = cmap(value)
+        hex_color = mcolors.to_hex(rgba)
+        
+        rectangle(longeur - 10, i * bande, longeur, (i + 1) * bande,remplissage=hex_color, couleur=hex_color)
+    y1 = 0
+    temp = 0
+    for i in range(8):
+        texte(longeur - 35, y1, f"{temp}°-", taille=10)
+        y1 += hauteur_fenetre / 8 
+        temp += 5
+
 
 def carte(nom):
     min_x , min_y , max_x, max_y = bbox_x(nom)
@@ -34,7 +53,8 @@ def carte(nom):
         longeur = 600 
     else:
         longeur = 1000
-    cree_fenetre(longeur,600)
+    cree_fenetre(longeur+100,600)
+    palette_temp(longeur+100,600)
     for i in range(len(reco)):
         if reco[i][0] not in outremer:
             dep = sf.shape(i)
@@ -51,10 +71,11 @@ def carte(nom):
                     x = (point[0] - min_x) / (max_x - min_x) * longeur
                     y = (max_y - point[1]) / (max_y - min_y) * 600
                     coo.append([x,y])
-                polygone(coo,couleur="black")
+                polygone(coo,couleur="black",remplissage="red")
         else:
             continue
 
     attend_ev()
     ferme_fenetre()
+
 carte("france")
