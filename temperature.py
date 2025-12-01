@@ -6,30 +6,29 @@ def temperature():
     dico_temp = {}
     with open("temperature-quotidienne-departementale.json","r",encoding="utf-8") as f:
         data = load(f)
-
+    mini = 40
+    maxi= 0
     for depar in data:
-        nom_departement = depar['departement']
+        code_departement = depar['code_insee_departement']
         tmax = depar['tmax'] 
         tmin = depar['tmin']
         tmoy = depar['tmoy']    
-        dico_temp[nom_departement] = {'tmin' : tmin, 'tmax' : tmax, 'tmoy' : tmoy}
-    return dico_temp
-print(temperature())
+        dico_temp[code_departement] = {'tmin' : tmin, 'tmax' : tmax, 'tmoy' : tmoy}
+        if tmax is not None and tmax > maxi:
+            maxi = tmax
+        if tmin is not None and tmin < mini:
+            mini = tmin
+        
+    return dico_temp, maxi, mini
 
-dico_temp = temperature()
+
+dico_temp,maxi,mini = temperature()
 def couleur(departement,tempera):
     nom = dico_temp[departement]
-
     temp = nom[tempera]
-
-    temp_min,temp_max = 0 , 40
-
-    temp = (temp - temp_min) / (temp_max - temp_min)
+    temp = (temp - mini) / (maxi - mini)
     cmap = plt.get_cmap('plasma')
-
-
     couleur = cmap(temp) 
-
     hex_couleur = colors.to_hex(couleur)
     return str(hex_couleur)
 
