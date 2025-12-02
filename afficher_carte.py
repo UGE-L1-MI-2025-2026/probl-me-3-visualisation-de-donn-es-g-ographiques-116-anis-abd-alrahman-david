@@ -5,7 +5,7 @@ import matplotlib.colors as mcolors
 from temperature import *
 
 def fichier(nom_fichier):
-    sf = shapefile.Reader(nom_fichier)
+    sf = shapefile.Reader("data/"+nom_fichier)
     reco = sf.records()
     return sf , reco
 
@@ -30,6 +30,8 @@ def bbox_x(nom):
     return min_x , min_y , max_x, max_y
 
 def palette_temp(longeur, hauteur_fenetre):
+    dico_temp,maxi,mini = temperature()
+    chaque_5 = 9
     cmap = plt.get_cmap('plasma')
     bande = 5 
     n = hauteur_fenetre // bande 
@@ -39,12 +41,11 @@ def palette_temp(longeur, hauteur_fenetre):
         hex_color = mcolors.to_hex(rgba)
         
         rectangle(longeur - 10, i * bande, longeur, (i + 1) * bande,remplissage=hex_color, couleur=hex_color)
-        y1 = 0
-        if y1 == 5:
-            texte(longeur - 35, i * bande, f"{value}°-", taille=10)
-        y1 += 1
-
-
+        chaque_5 += 1
+        if chaque_5 == 10:
+            temp_reel = value * (maxi-mini) + mini
+            texte(longeur - 40, i * bande, f"{int(temp_reel)}°-", taille=16)
+            chaque_5 = 0
 
 
 def carte(nom):
