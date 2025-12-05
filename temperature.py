@@ -18,7 +18,6 @@ def temperature():
             maxi = tmax
         if tmin is not None and tmin < mini:
             mini = tmin
-        
     return dico_temp, maxi, mini
 
 
@@ -31,8 +30,3 @@ def couleur(departement,tempera):
     couleur = cmap(temp) 
     hex_couleur = colors.to_hex(couleur)
     return str(hex_couleur)
-
-
-
-    
-    
