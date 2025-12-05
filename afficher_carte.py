@@ -73,7 +73,7 @@ def carte(nom):
                     x = (point[0] - min_x) / (max_x - min_x) * longeur
                     y = (max_y - point[1]) / (max_y - min_y) * 600
                     coo.append([x,y])
-                polygone(coo,couleur="black",remplissage=couleur(reco[i][0],'tmin'))
+                polygone(coo,couleur="black",remplissage=couleur(reco[i][0],'tmax'))
         else:
             continue
 
