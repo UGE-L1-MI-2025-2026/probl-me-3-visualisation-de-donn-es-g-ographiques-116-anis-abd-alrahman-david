@@ -9,17 +9,17 @@ def temperature():
     mini = 40
     maxi= 0
     for depar in data:
-        code_departement = depar['code_insee_departement']
-        tmax = depar['tmax'] 
-        tmin = depar['tmin']
-        tmoy = depar['tmoy']    
-        dico_temp[code_departement] = {'tmin' : tmin, 'tmax' : tmax, 'tmoy' : tmoy}
-        if tmax is not None and tmax > maxi:
-            maxi = tmax
-        if tmin is not None and tmin < mini:
-            mini = tmin
+        if depar['date_obs'] == '2018-07-01':
+            code_departement = depar['code_insee_departement']
+            tmax = depar['tmax']
+            tmin = depar['tmin']
+            tmoy = depar['tmoy']  
+            dico_temp[code_departement] = {'tmin' : tmin, 'tmax' : tmax, 'tmoy' : tmoy}
+            if tmax is not None and tmax > maxi:
+                maxi = tmax
+            if  tmin is not None and tmin < mini:
+                mini = tmin
     return dico_temp, maxi, mini
-
 
 dico_temp,maxi,mini = temperature()
 def couleur(departement,tempera):

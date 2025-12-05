@@ -1,10 +1,15 @@
-import csv 
+
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+
 
 def lire_csv(nom_fichier):
     """
-    Lit un fichier csv ligne par ligne et Renvoie une liste de lignes (chaque ligne est une liste de valeurs)
+    Lit un fichier CSV et renvoie toutes les lignes sous forme de liste de listes.
+    - nom_fichier : chemin vers le fichier CSV (str)
+    - return : liste de listes, chaque sous-liste représente une ligne du fichier
     """
-    with open(nom_fichier, 'r', encoding='utf-8-sig') as fichier:  # utf-8-sig enlève le BOM
+    with open(nom_fichier, 'r', encoding='utf-8-sig') as fichier:
         lignes = []
         for ligne in fichier:
             ligne = ligne.strip()
@@ -13,72 +18,111 @@ def lire_csv(nom_fichier):
                 lignes.append(valeurs)
         return lignes
 
+
 def extraire_entete(lignes_csv):
-    """Extrait l'entête (la première ligne) d'un fichier CSV sous forme de liste de noms de colonnes."""
+    """Extrait l'entête (première ligne)."""
     return lignes_csv[0]
 
+
 def extraire_donnees(lignes_csv):
-    """Extrait les données (toutes les lignes sauf la première) d'un fichier CSV sous forme de liste de listes."""
+    """Extrait les données (toutes les lignes sauf la première)."""
     return lignes_csv[1:]
 
-def trouver_position_colonne(entete, nom_colonne):
-    """Trouve la position (index) d'une colonne donnée dans l'entête."""
+
+def trouver_colonne(entete, nom_colonne):
+    """
+    Trouve l’index d’une colonne.
+    """
     for i in range(len(entete)):
         if entete[i].strip() == nom_colonne:
             return i
     return -1
 
-def obtenir_stations_meteo():
+
+def charger_temperatures():
     """
-    Lit un fichier des stations météo et renvoie les informations importantes 
-    - return : liste de dictionnaires, 1 par station météo
-    chaque dictionnaire contient les clés : 'nom', 'latitude', 'longitude', 'temperature'
-    
-    ATTENTION : Ce fichier CSV contient des données par département, pas par station.
-    Les colonnes sont : Date, Code INSEE département, Département, TMin, TMax, TMoy
+    Charge toutes les températures depuis le CSV.
+    Retourne une liste de dictionnaires :
+    {
+        'date': ... ,
+        'code': ... ,
+        'nom': ... ,
+        'tmin': float,
+        'tmax': float,
+        'tmoy': float
+    }
     """
     lignes = lire_csv("data/temperature-quotidienne-departementale.csv")
     entete = extraire_entete(lignes)
     donnees = extraire_donnees(lignes)
 
-    print("Entête du fichier :", entete)
-    
-    pos_date = trouver_position_colonne(entete, 'Date')
-    pos_code = trouver_position_colonne(entete, 'Code INSEE département')
-    pos_nom = trouver_position_colonne(entete, 'Département')
-    pos_tmin = trouver_position_colonne(entete, 'TMin (°C)')
-    pos_tmax = trouver_position_colonne(entete, 'TMax (°C)')
-    pos_tmoy = trouver_position_colonne(entete, 'TMoy (°C)')
-    
-    print(f"Positions trouvées - Date:{pos_date}, Code:{pos_code}, Nom:{pos_nom}, TMin:{pos_tmin}, TMax:{pos_tmax}, TMoy:{pos_tmoy}")
+    # Trouver les positions
+    pos_date = trouver_colonne(entete, 'Date')
+    pos_code = trouver_colonne(entete, 'Code INSEE département')
+    pos_nom = trouver_colonne(entete, 'Département')
+    pos_tmin = trouver_colonne(entete, 'TMin (°C)')
+    pos_tmax = trouver_colonne(entete, 'TMax (°C)')
+    pos_tmoy = trouver_colonne(entete, 'TMoy (°C)')
 
-    departements = []
+    if -1 in [pos_date, pos_code, pos_nom, pos_tmin, pos_tmax, pos_tmoy]:
+        raise ValueError("Une ou plusieurs colonnes sont introuvables dans le CSV.")
+
+    resultats = []
     for ligne in donnees:
-        if len(ligne) > max(pos_nom, pos_tmin, pos_tmax, pos_tmoy):
+        if len(ligne) > max(pos_date, pos_code, pos_nom, pos_tmin, pos_tmax, pos_tmoy):
             try:
-                tmin_str = ligne[pos_tmin].strip()
-                tmax_str = ligne[pos_tmax].strip()
-                tmoy_str = ligne[pos_tmoy].strip()
-                
-                if tmin_str and tmax_str and tmoy_str:
-                    departement = {
-                        'date': ligne[pos_date].strip() if pos_date >= 0 else '',
-                        'code': ligne[pos_code].strip() if pos_code >= 0 else '',
+                tmin = ligne[pos_tmin].strip()
+                tmax = ligne[pos_tmax].strip()
+                tmoy = ligne[pos_tmoy].strip()
+
+                if tmin and tmax and tmoy:
+                    dept = {
+                        'date': ligne[pos_date].strip(),
+                        'code': ligne[pos_code].strip(),
                         'nom': ligne[pos_nom].strip(),
-                        'tmin': float(tmin_str),
-                        'tmax': float(tmax_str),
-                        'tmoy': float(tmoy_str)
+                        'tmin': float(tmin),
+                        'tmax': float(tmax),
+                        'tmoy': float(tmoy)
                     }
-                    departements.append(departement)
+                    resultats.append(dept)
             except (ValueError, IndexError):
                 continue
-    
-    return departements
+
+    return resultats
+
+
+
+#  Fonction couleur 
+
+
+def couleur_tmoy(tmoy, mini, maxi):
+    """
+    Renvoie une couleur hexadécimale selon la température tmoy,
+    utilisant la palette 'plasma' de matplotlib (bleu → rouge).
+    """
+    # Normalisation
+    t_norm = (tmoy - mini) / (maxi - mini)
+    t_norm = max(0, min(1, t_norm))  # clamp 0..1
+
+    cmap = plt.get_cmap('plasma')
+    couleur = cmap(t_norm)
+    return colors.to_hex(couleur)
+
+
+def obtenir_dates():
+    """Retourne toutes les dates uniques."""
+    donnees = charger_temperatures()
+    dates = []
+    for entree in donnees:
+        if 'date' in entree:
+            if entree['date'] not in dates:
+                dates.append(entree['date'])
+    return dates
+
 
 def filtrer_par_temperature(departements, temp_min, temp_max):
     """
-    Filtre les départements dont la température moyenne est comprise entre temp_min et temp_max (inclus).
-    Retourne une liste de dictionnaires des départements filtrés.
+    Filtre les départements dont tmoy est entre temp_min et temp_max.
     """
     departements_filtres = []
     for dept in departements:
@@ -86,55 +130,68 @@ def filtrer_par_temperature(departements, temp_min, temp_max):
             departements_filtres.append(dept)
     return departements_filtres
 
-def obtenir_temperatures_departements(date_specifique=None):
+
+def obtenir_temp_par_date(date_specifique=None):
     """
-    Retourne un dictionnaire {code_departement: temperature_moyenne}
-    Si date_specifique est fournie, filtre sur cette date.
-    Sinon prend la première date disponible.
+    Retourne un dict {code_departement : tmoy}
     """
-    departements = obtenir_stations_meteo()
-    
+    departements = charger_temperatures()
     if not departements:
         return {}
-    
+
     if date_specifique is None:
         date_specifique = departements[0]['date']
-        print(f"Aucune date spécifiée, utilisation de : {date_specifique}")
-    
+
     temp_par_dep = {}
     for dept in departements:
         if dept['date'] == date_specifique:
             temp_par_dep[dept['code']] = dept['tmoy']
-    
+
     return temp_par_dep
 
 
+
+# Exemple d’ajout automatique de la couleur
+
+
+def ajouter_couleurs(donnees):
+    """
+    Ajoute une clé 'couleur' à chaque entrée de données.
+    """
+    mini = min(d['tmoy'] for d in donnees)
+    maxi = max(d['tmoy'] for d in donnees)
+
+    for dept in donnees:
+        dept['couleur'] = couleur_tmoy(dept['tmoy'], mini, maxi)
+
+    return donnees
+
+
+
+#  Tests
+
+
 if __name__ == "__main__":
-    print("=== TEST 1 : Lecture du fichier ===")
+    print("=== TEST Chargement ===")
+    donnees = charger_temperatures()
+    print(f"Entrées : {len(donnees)}")
+
+    print("=== Ajout des couleurs ===")
+    donnees_colorees = ajouter_couleurs(donnees)
+    print(donnees_colorees[0])
+
+    print("=== TEST 1 : Lecture ===")
     lignes = lire_csv("data/temperature-quotidienne-departementale.csv")
-    print(f"Nombre de lignes lues : {len(lignes)}")
-    print(f"Première ligne : {lignes[0]}")
+    print(f"Lignes lues : {len(lignes)}")
     
     print("\n=== TEST 2 : Entête ===")
     entete = extraire_entete(lignes)
-    print(f"Colonnes : {entete}")
-
-    print("\n=== TEST 3 : Départements ===")
-    departements = obtenir_stations_meteo()
-    print(f"Nombre d'entrées : {len(departements)}")
-    if len(departements) > 0:
-        print(f"Première entrée : {departements[0]}")
-        print(f"Dernière entrée : {departements[-1]}")
+    print(f"Colonnes : {entete[:3]}...")
     
-    print("\n=== TEST 4 : Températures par département ===")
-    temp_dep = obtenir_temperatures_departements()
-    print(f"Nombre de départements : {len(temp_dep)}")
-    if temp_dep:
-        for code, temp in list(temp_dep.items())[:5]:
-            print(f"  Département {code}: {temp}°C")
+    print("\n=== TEST 4 : Par date ===")
+    temp = obtenir_temp_par_date()
+    print(f"Départements : {len(temp)}")
     
     print("\n=== TEST 5 : Filtrage ===")
-    filtres = filtrer_par_temperature(departements, 15, 20)
-    print(f"Départements avec température entre 15 et 20°C : {len(filtres)}")
-    if filtres:
-        print(f"Exemple : {filtres[0]}")
+    filtres = filtrer_par_temperature(donnees, 15, 20)
+    print(f"Entre 15-20°C : {len(filtres)}")
