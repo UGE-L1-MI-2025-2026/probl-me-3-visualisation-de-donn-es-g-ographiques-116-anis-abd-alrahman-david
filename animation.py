@@ -9,7 +9,13 @@ def animation():
         if tev == 'Touche':
             nom_touche = touche(ev)
             if nom_touche == 'Left':
-                temperature()
+                da = int(d) - 1
+                d = str(da)
+                temperature(d)
+                carte('france',d)
             elif nom_touche == 'Right':
-                b
+                da = int(d) + 1
+                d = str(da)
+                temperature(d)
+                carte('france',d)
             
