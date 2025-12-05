@@ -9,7 +9,8 @@ def fichier(nom_fichier):
     reco = sf.records()
     return sf , reco
 
-outremer = ['974', '972', '971', '973', '976',"69D",'69M']
+outremer = ['974', '972', '971', '973', '976']
+probleme = ["69D",'69M']
 
 def bbox_x(nom):
     sf , reco = fichier(nom)
@@ -73,7 +74,10 @@ def carte(nom):
                     x = (point[0] - min_x) / (max_x - min_x) * longeur
                     y = (max_y - point[1]) / (max_y - min_y) * 600
                     coo.append([x,y])
-                polygone(coo,couleur="black",remplissage=couleur(reco[i][0],'tmin'))
+                if reco[i][0] not in probleme:
+                    polygone(coo,couleur="black",remplissage=couleur(reco[i][0],'tmax'))
+                else:
+                    polygone(coo,couleur="black",remplissage=couleur('69','tmax'))
         else:
             continue
 
