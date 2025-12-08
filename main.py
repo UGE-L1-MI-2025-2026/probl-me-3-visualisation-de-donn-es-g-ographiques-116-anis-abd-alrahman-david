@@ -7,6 +7,7 @@ import matplotlib.colors as colors
 
 
 def main(nom,date):
+    min_x , min_y , max_x, max_y = bbox_x(nom)
     dico_temp,maxi,mini = temperature(date)
     if nom == "france":
         longeur = 600 
@@ -14,7 +15,7 @@ def main(nom,date):
         longeur = 1000
     cree_fenetre(longeur+100,600)
     palette_temp(longeur+100,600,maxi,mini)
-    carte(nom,longeur,dico_temp,maxi,mini)
+    carte(nom,longeur,dico_temp,maxi,mini,min_x , min_y , max_x, max_y)
     attend_ev()
     ferme_fenetre()
 

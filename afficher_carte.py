@@ -48,8 +48,7 @@ def palette_temp(longeur, hauteur_fenetre,maxi,mini):
             chaque_5 = 0
 
 
-def carte(nom,longeur,dico_temp,maxi,mini):
-    min_x , min_y , max_x, max_y = bbox_x(nom)
+def carte(nom,longeur,dico_temp,maxi,mini,min_x , min_y , max_x, max_y):
     sf , reco = fichier(nom)
     for i in range(len(reco)):
         if reco[i][0] not in outremer:
