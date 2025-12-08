@@ -6,8 +6,19 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 
 
+def main(nom,date):
+    dico_temp,maxi,mini = temperature(date)
+    if nom == "france":
+        longeur = 600 
+    else:
+        longeur = 1000
+    cree_fenetre(longeur+100,600)
+    palette_temp(longeur+100,600,maxi,mini)
+    carte(nom,longeur,dico_temp,maxi,mini)
+    attend_ev()
+    ferme_fenetre()
 
 
 
-def main():
-    cree_fenetre(700)
+
+main('france','2018-12-12')

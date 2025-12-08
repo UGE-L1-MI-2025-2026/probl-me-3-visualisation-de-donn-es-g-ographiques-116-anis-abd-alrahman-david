@@ -2,14 +2,14 @@ from json import *
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 
-def temperature():
+def temperature(date):
     dico_temp = {}
     with open("temperature-quotidienne-departementale.json","r",encoding="utf-8") as f:
         data = load(f)
     mini = 40
     maxi= 0
     for depar in data:
-        if depar['date_obs'] == "2018-07-01":
+        if depar['date_obs'] == date:
             code_departement = depar['code_insee_departement']
             tmax = depar['tmax']
             tmin = depar['tmin']
@@ -21,8 +21,7 @@ def temperature():
                 mini = tmin
     return dico_temp, maxi, mini
 
-dico_temp,maxi,mini = temperature()
-def couleur(departement,tempera):
+def couleur(departement,tempera,dico_temp,maxi,mini):
     nom = dico_temp[departement]
     temp = nom[tempera]
     temp = (temp - mini) / (maxi - mini)

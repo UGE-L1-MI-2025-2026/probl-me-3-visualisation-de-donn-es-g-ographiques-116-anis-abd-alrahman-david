@@ -30,8 +30,7 @@ def bbox_x(nom):
             continue
     return min_x , min_y , max_x, max_y
 
-def palette_temp(longeur, hauteur_fenetre):
-    dico_temp,maxi,mini = temperature()
+def palette_temp(longeur, hauteur_fenetre,maxi,mini):
     chaque_5 = 9
     cmap = plt.get_cmap('plasma')
     bande = 5 
@@ -49,15 +48,9 @@ def palette_temp(longeur, hauteur_fenetre):
             chaque_5 = 0
 
 
-def carte(nom):
+def carte(nom,longeur,dico_temp,maxi,mini):
     min_x , min_y , max_x, max_y = bbox_x(nom)
     sf , reco = fichier(nom)
-    if nom == "france":
-        longeur = 600 
-    else:
-        longeur = 1000
-    cree_fenetre(longeur+100,600)
-    palette_temp(longeur+100,600)
     for i in range(len(reco)):
         if reco[i][0] not in outremer:
             dep = sf.shape(i)
@@ -75,14 +68,9 @@ def carte(nom):
                     y = (max_y - point[1]) / (max_y - min_y) * 600
                     coo.append([x,y])
                 if reco[i][0] not in probleme:
-                    polygone(coo,couleur="black",remplissage=couleur(reco[i][0],'tmax'))
+                    polygone(coo,couleur="black",remplissage=couleur(reco[i][0],'tmax',dico_temp,maxi,mini))
                 else:
-                    polygone(coo,couleur="black",remplissage=couleur('69','tmax'))
-        else:
-            print("BBOX OK")
+                    polygone(coo,couleur="black",remplissage=couleur('69','tmax',dico_temp,maxi,mini))
+        else:   
             continue
             
-    attend_ev()
-    ferme_fenetre()
-
-carte("france")
