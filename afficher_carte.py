@@ -67,9 +67,11 @@ def carte(nom,longeur,dico_temp,maxi,mini,min_x , min_y , max_x, max_y):
                     y = (max_y - point[1]) / (max_y - min_y) * 600
                     coo.append([x,y])
                 if reco[i][0] not in probleme:
-                    polygone(coo,couleur="black",remplissage=couleur(reco[i][0],'tmax',dico_temp,maxi,mini))
+                    polygone(coo,couleur="black",
+                        remplissage=couleur(reco[i][0],'tmax',dico_temp,maxi,mini) if nom == "france" else "")
                 else:
-                    polygone(coo,couleur="black",remplissage=couleur('69','tmax',dico_temp,maxi,mini))
+                    polygone(coo,couleur="black",
+                        remplissage=couleur('69','tmax',dico_temp,maxi,mini) if nom == "france" else "")
         else:   
             continue
             
