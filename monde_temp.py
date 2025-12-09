@@ -1,31 +1,45 @@
 from netCDF4 import *
 from fltk import *
+import numpy as np
 
 nc = Dataset("DCENT_ensemble_1850_2023_ensemble_mean.nc", "r")
 
+
+
+longitude = nc.variables["lon"][:]
+latidue = nc.variables["lat"][:]
+time = nc.variables["time"][:]
+
 """
 print("="*10,"Longitude","="*10)
-longitude = nc.variables["lon"][:]
+print(longitude[0])
 print("="*10,"Latitude","="*10)
-latidue = nc.variables["lat"][:]
+print(latidue[0])
 print("="*10,"Time","="*10)
-print(nc.variables["time"][:])
-print("="*10,"Info","="*10)
-print(nc)
+print(time[20])
+print("="*10,"Temperature","="*10)
+#TRavile sur la tempeature on doit change ca shape
+print(nc.variables['temperature'].shape)
 """
-
-def couleur_monde(min_x , min_y , max_x, max_y,longeur):
+def couleur_monde(longeur=1000):
     """
     Cette fonction doit retourne des carre de couleurs transparent sur la fenetre
     par dessus de la carte du monde
     """
-    longitude = nc.variables["lon"][:]
-    latidue = nc.variables["lat"][:]
-    coo = []
+    #BBOX du quadrillage
+    minx = min(longitude)
+    miny = min(latidue)
+    maxx = max(longitude)
+    maxy = max(latidue)
+    #Dessin du quadrillage
+    largeur_pixel = longeur / len(longitude)
+    hauteur_pixel = 600 / len(latidue)
     for i in range(len(longitude)):
         for k in range(len(latidue)):
-            x = (longitude[i] - min_x) / (max_x - min_x) * longeur
-            y = (max_y - latidue[k]) / (max_y - min_y) * 600
-            coo.append([x,y])
-        polygone(coo,couleur='black')
-    None
+            x = (longitude[i] - minx) / (maxx - minx) * longeur
+            y = (maxy - latidue[k]) / (maxy - miny) * 600
+            coo = [[x,y],
+                   [x+largeur_pixel,y],
+                   [x+largeur_pixel,y+hauteur_pixel],
+                   [x,y+hauteur_pixel]]
+            polygone(coo,couleur='black')
