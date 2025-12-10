@@ -18,7 +18,7 @@ def main(nom,date='2018-07-01'):
     palette_temp(longeur+100,600,maxi,mini)
     carte(nom,longeur,dico_temp,maxi,mini,min_x , min_y , max_x, max_y)
     if nom == "monde":
-        couleur_monde(longeur)
+        temperature_monde(longeur)
     attend_ev()
     ferme_fenetre()
 
