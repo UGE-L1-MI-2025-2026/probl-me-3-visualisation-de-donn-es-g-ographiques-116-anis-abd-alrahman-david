@@ -3,48 +3,46 @@ from afficher_carte import *
 from fltk import *
 
 
+LONGUEUR = 600
 
-
-
-def animation(date):
-    min = 1
-    max = 31
-    jour = date[-2:]
+def animation(date,nom='france'):
+    min_x , min_y , max_x, max_y = bbox_x(nom)
+    min_jour = 1
+    max_jour = 31
+    jour = int(date[-2:])
     mois = date[5:7]
     annee = date[0:4]
     while True:
-        ev = donne_ev
-        tev = type_ev
+        ev = donne_ev()
+        tev = type_ev(ev)
         if tev == 'Touche':
             nom_touche = touche(ev)
             if nom_touche == 'Left':
-                print('yes')
-                jour = date[-2]
-                int_jour = int(jour) - 1
-                if int_jour < min:
-                    int_jour = max
-                    jour = str(int_jour)
-                    date = '2018-07-{jour}'
-                else:
-                    jour = str(int_jour)
-                    date = '2018-07-{jour}'
-                temperature(date)
+                jour = jour - 1
+                if jour < min_jour:
+                    jour = max_jour
+                
+                date = f'2018-07-{jour:02d}'
+                dico_temp,maxi,mini = temperature(date)
+                efface_tout()
+                palette_temp(LONGUEUR+100,600,maxi,mini)
+                carte(nom,LONGUEUR,dico_temp,maxi,mini,min_x , min_y , max_x, max_y)
+                print(date)
+
             elif nom_touche == 'Right':
-                print('no')
-                jour = date[-2]
-                int_jour = int(jour) + 1
-                if int_jour > max:
-                    int_jour = min
-                    jour = str(int_jour)
-                    date = '2018-07-{jour}'
-                else:
-                    jour = str(int_jour)
-                    date = '2018-07-{jour}'
-                temperature(date)
+                jour = jour + 1
+                if jour > max_jour:
+                    jour = min_jour
+                date = f'2018-07-{jour:02d}'
+                dico_temp,maxi,mini = temperature(date)
+                efface_tout()
+                palette_temp(LONGUEUR+100,600,maxi,mini)
+                carte(nom,LONGUEUR,dico_temp,maxi,mini,min_x , min_y , max_x, max_y)
+                print(date)
         elif tev == 'Quitte':
             break
         else:
             pass
 
-    mise_a_jour()
+        mise_a_jour()
                 

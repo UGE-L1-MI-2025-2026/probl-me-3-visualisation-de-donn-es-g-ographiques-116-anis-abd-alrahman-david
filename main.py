@@ -12,17 +12,23 @@ def main(nom,date='2018-07-01'):
     dico_temp,maxi,mini = temperature(date)
     if nom == "france":
         longeur = 600 
+        cree_fenetre(longeur+100,600)
+        palette_temp(longeur+100,600,maxi,mini)
+        carte(nom,longeur,dico_temp,maxi,mini,min_x , min_y , max_x, max_y)
+        attend_ev()
+        animation(date)
+        ferme_fenetre()
     else:
         longeur = 1000
-    cree_fenetre(longeur+100,600)
-    palette_temp(longeur+100,600,maxi,mini)
-    carte(nom,longeur,dico_temp,maxi,mini,min_x , min_y , max_x, max_y)
-    if nom == "monde":
+        cree_fenetre(longeur+100,600)
         temperature_monde(longeur)
-    attend_ev()
-    ferme_fenetre()
+        carte(nom,longeur,dico_temp,maxi,mini,min_x , min_y , max_x, max_y)
+        attend_ev()
+        ferme_fenetre()
 
 
 
 
-main('france')
+
+if __name__ == "__main__":
+    main('france')
