@@ -25,9 +25,8 @@ def animation(date,nom='france'):
                 date = f'2018-07-{jour:02d}'
                 dico_temp,maxi,mini = temperature(date)
                 efface_tout()
-                palette_temp(LONGUEUR+100,600,maxi,mini)
-                carte(nom,LONGUEUR,dico_temp,maxi,mini,min_x , min_y , max_x, max_y)
-                print(date)
+                palette_temp(LONGUEUR+100,650,maxi,mini)
+                carte(nom,LONGUEUR,dico_temp,maxi,mini,min_x , min_y , max_x, max_y,date=date)
 
             elif nom_touche == 'Right':
                 jour = jour + 1
@@ -36,9 +35,8 @@ def animation(date,nom='france'):
                 date = f'2018-07-{jour:02d}'
                 dico_temp,maxi,mini = temperature(date)
                 efface_tout()
-                palette_temp(LONGUEUR+100,600,maxi,mini)
-                carte(nom,LONGUEUR,dico_temp,maxi,mini,min_x , min_y , max_x, max_y)
-                print(date)
+                palette_temp(LONGUEUR+100,650,maxi,mini)
+                carte(nom,LONGUEUR,dico_temp,maxi,mini,min_x , min_y , max_x, max_y,date=date)
         elif tev == 'Quitte':
             break
         else:

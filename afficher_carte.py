@@ -31,6 +31,7 @@ def bbox_x(nom):
     return min_x , min_y , max_x, max_y
 
 def palette_temp(longeur, hauteur_fenetre,maxi,mini):
+    efface("pal")
     chaque_5 = 9
     cmap = plt.get_cmap('plasma')
     bande = 5 
@@ -40,15 +41,17 @@ def palette_temp(longeur, hauteur_fenetre,maxi,mini):
         rgba = cmap(value)
         hex_color = mcolors.to_hex(rgba)
         
-        rectangle(longeur - 10, i * bande, longeur, (i + 1) * bande,remplissage=hex_color, couleur=hex_color)
+        rectangle(longeur - 10, i * bande, longeur, (i + 1) * bande,remplissage=hex_color, couleur=hex_color,tag='pal')
         chaque_5 += 1
         if chaque_5 == 10:
             temp_reel = value * (maxi-mini) + mini
-            texte(longeur - 40, i * bande, f"{int(temp_reel)}°-", taille=16)
+            texte(longeur - 40, i * bande, f"{int(temp_reel)}°-", taille=16,tag='pal')
             chaque_5 = 0
 
 
-def carte(nom,longeur,dico_temp,maxi,mini,min_x , min_y , max_x, max_y):
+def carte(nom,longeur,dico_temp,maxi,mini,min_x , min_y , max_x, max_y,date="2018-07-01"):
+    if nom == 'france':
+        texte(290,610,f"{date}")
     sf , reco = fichier(nom)
     for i in range(len(reco)):
         if reco[i][0] not in outremer:
@@ -74,4 +77,3 @@ def carte(nom,longeur,dico_temp,maxi,mini,min_x , min_y , max_x, max_y):
                         remplissage=couleur('69','tmax',dico_temp,maxi,mini) if nom == "france" else "")
         else:   
             continue
-            
