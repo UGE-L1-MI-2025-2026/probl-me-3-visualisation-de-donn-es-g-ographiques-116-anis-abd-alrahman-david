@@ -7,7 +7,7 @@ from temperature import couleur as couleur_temperature  # CORRECTION: Import exp
 
 LONGUEUR = 600
 
-# Variables pour le zoom et le déplacement (SANS global)
+
 def animation(date, nom='france'):
     """
     Animation interactive avec gestion des touches.
@@ -18,7 +18,7 @@ def animation(date, nom='france'):
     - Ajout changement de date (flèches gauche/droite)
     - Ajout affichage info survol souris
     """
-    # MODIFICATION: Variables locales au lieu de global
+    
     zoom_level = 1.0
     offset_x = 0
     offset_y = 0
