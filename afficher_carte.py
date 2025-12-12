@@ -96,47 +96,7 @@ def carte(nom, longeur, dico_temp, maxi, mini, min_x, min_y, max_x, max_y, date=
         code_dept = reco[i][0]
         parts = dep.parts
         parts_complet = list(parts) + [len(dep.points)]
-        
-        # ========== TRAITEMENT DE L'OUTRE-MER ==========
-        if code_dept in outremer:
-            points = dep.points
-            xs = [p[0] for p in points]
-            ys = [p[1] for p in points]
-            
-            dept_min_x = min(xs)
-            dept_max_x = max(xs)
-            dept_min_y = min(ys)
-            dept_max_y = max(ys)
-            dept_width = dept_max_x - dept_min_x
-            dept_height = dept_max_y - dept_min_y
-            
-            echelle = 60 / max(dept_width, dept_height)
-            pos_x, pos_y = outremer_positions[code_dept]
-            
-            for k in range(len(parts_complet) - 1):
-                debut = parts_complet[k]
-                fin = parts_complet[k + 1]
-                coo = []
-                
-                for j in range(debut, fin):
-                    point = points[j]
-                    x = (point[0] - dept_min_x) * echelle + pos_x
-                    y = pos_y + (dept_max_y - point[1]) * echelle
-                    coo.append([x, y])
-                
-                # CORRECTION: Utiliser couleur_temperature au lieu de couleur
-                if code_dept in dico_temp:
-                    couleur_dept = couleur_temperature(code_dept, 'tmax', dico_temp, maxi, mini)
-                    tmoy = dico_temp[code_dept]['tmoy']
-                    id_poly = polygone(coo, couleur="black", remplissage=couleur_dept,
-                                      epaisseur=0.5, tag=f"dept_{code_dept}")
-                    dept_info[id_poly] = (code_dept, tmoy)
-                else:
-                    polygone(coo, couleur="black", remplissage="#cccccc", epaisseur=0.5)
-        
-        # ========== TRAITEMENT DE LA MÉTROPOLE ==========
-        else:
-            for k in range(len(parts_complet) - 1):
+        for k in range(len(parts_complet) - 1):
                 debut = parts_complet[k]
                 fin = parts_complet[k + 1]
                 coo = []
@@ -153,7 +113,7 @@ def carte(nom, longeur, dico_temp, maxi, mini, min_x, min_y, max_x, max_y, date=
                     code_final = '69'
                 
                 if code_final in dico_temp:
-                    couleur_dept = couleur_temperature(code_final, 'tmax', dico_temp, maxi, mini)
+                    couleur_dept = couleur_temperature(code_final, 'tmoy', dico_temp, maxi, mini)
                     tmoy = dico_temp[code_final]['tmoy']
                     id_poly = polygone(coo, couleur="black",
                                       remplissage=couleur_dept if nom == "france" else "",

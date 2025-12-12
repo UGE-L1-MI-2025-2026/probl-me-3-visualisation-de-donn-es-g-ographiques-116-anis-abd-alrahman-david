@@ -11,12 +11,10 @@ LONGUEUR = 600
 def animation(date, nom='france'):
     """
     Animation interactive avec gestion des touches.
-    
-    MODIFICATIONS PAR DAVID:
-    - Ajout zoom/dézoom (flèches haut/bas)
-    - Ajout déplacement (Q Z S D)
-    - Ajout changement de date (flèches gauche/droite)
-    - Ajout affichage info survol souris
+    - zoom/dézoom (flèches haut/bas)
+    - déplacement (Q Z S D)
+    - changement de date (flèches gauche/droite)
+    - affichage info survol souris
     """
     
     zoom_level = 1.0
@@ -92,19 +90,19 @@ def animation(date, nom='france'):
                 redessiner = True
             
             # ========== DÉPLACEMENT ==========
-            elif nom_touche == 'q' or nom_touche == 'Q':
+            elif nom_touche == 'd' or nom_touche == 'D':
                 offset_x -= deplacement_step
                 redessiner = True
             
-            elif nom_touche == 'd' or nom_touche == 'D':
+            elif nom_touche == 'q' or nom_touche == 'Q':
                 offset_x += deplacement_step
                 redessiner = True
             
-            elif nom_touche == 'z' or nom_touche == 'Z':
+            elif nom_touche == 's' or nom_touche == 'S':
                 offset_y -= deplacement_step
                 redessiner = True
             
-            elif nom_touche == 's' or nom_touche == 'S':
+            elif nom_touche == 'z' or nom_touche == 'Z':
                 offset_y += deplacement_step
                 redessiner = True
             
@@ -114,9 +112,9 @@ def animation(date, nom='france'):
                 dico_temp, maxi, mini = temperature(date)
                 
                 efface_tout()
-                palette_temp(LONGUEUR + 100, 750, maxi, mini)  # CORRECTION: Hauteur 750
+                palette_temp(LONGUEUR + 100, 700, maxi, mini)  
                 
-                # CORRECTION: Récupérer le nouveau dept_info
+            
                 dept_info = carte_avec_transformation(nom, LONGUEUR, dico_temp, maxi, mini,
                                                      min_x, min_y, max_x, max_y, date,
                                                      zoom_level, offset_x, offset_y)
@@ -187,7 +185,7 @@ def carte_avec_transformation(nom, longeur, dico_temp, maxi, mini,
                 if code_dept in dico_temp:
                     tmoy = dico_temp[code_dept].get('tmoy')
                     if tmoy is not None:
-                        couleur_dept = couleur_temperature(code_dept, 'tmax', dico_temp, maxi, mini)
+                        couleur_dept = couleur_temperature(code_dept, 'tmoy', dico_temp, maxi, mini)
                         id_poly = polygone(coo, couleur="black", remplissage=couleur_dept,
                                           epaisseur=0.5, tag=f"dept_{code_dept}")
                         dept_info[id_poly] = (code_dept, tmoy)
@@ -207,7 +205,7 @@ def carte_avec_transformation(nom, longeur, dico_temp, maxi, mini,
                 for j in range(debut, fin):
                     point = dep.points[j]
                     # MODIFICATION: Élargir à 580px
-                    x = ((point[0] - min_x) / (max_x - min_x) * 580) * zoom + offset_x
+                    x = ((point[0] - min_x) / (max_x - min_x) * 600) * zoom + offset_x
                     y = ((max_y - point[1]) / (max_y - min_y) * 700) * zoom + offset_y
                     
                     if 0 <= x <= 580 and 0 <= y <= 700:
@@ -224,7 +222,7 @@ def carte_avec_transformation(nom, longeur, dico_temp, maxi, mini,
                     if code_final in dico_temp:
                         tmoy = dico_temp[code_final].get('tmoy')
                         if tmoy is not None:
-                            couleur_dept = couleur_temperature(code_final, 'tmax', dico_temp, maxi, mini)
+                            couleur_dept = couleur_temperature(code_final, 'tmoy', dico_temp, maxi, mini)
                             id_poly = polygone(coo, couleur="black",
                                               remplissage=couleur_dept if nom == "france" else "",
                                               tag=f"dept_{code_final}")
