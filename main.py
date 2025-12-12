@@ -9,25 +9,16 @@ import matplotlib.colors as colors
 
 def main(nom, date='2018-07-01'):
     min_x, min_y, max_x, max_y = bbox_x(nom)
-    dico_temp, maxi, mini = temperature(date)
     
     if nom == "france":
         longeur = 600
     else:
         longeur = 1000
     
-    cree_fenetre(longeur + 150, 750)  # Élargir la fenêtre pour éviter le chevauchement avec la palette  # MODIFIÉ: 750 au lieu de 650
+    # Créer la fenêtre avec sa taille d'origine
+    cree_fenetre(longeur + 100, 750)
     
-    # Dessiner la carte et récupérer dept_info
-    dept_info = carte(nom, longeur, dico_temp, maxi, mini, 
-                     min_x, min_y, max_x, max_y, date)
-    
-    # Fusionner titre et date
-    titre_et_date = f"Carte des températures - {date}"
-    texte((longeur + 100) // 2, 20, titre_et_date, ancrage='center', taille=14)
-    palette_temp(longeur + 100, 700, maxi, mini)  # Élargir la hauteur pour éviter le chevauchement
-    
-    # Lancer l'animation
+    # Lancer directement l'animation qui s'occupe de tout dessiner
     animation(date, nom)
     
     ferme_fenetre()

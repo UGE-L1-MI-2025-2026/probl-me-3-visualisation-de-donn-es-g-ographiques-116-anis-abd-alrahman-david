@@ -114,7 +114,7 @@ def animation(date, nom='france'):
                 dico_temp, maxi, mini = temperature(date)
                 
                 efface_tout()
-                palette_temp(LONGUEUR + 100, 650, maxi, mini)
+                palette_temp(LONGUEUR + 100, 750, maxi, mini)  # CORRECTION: Hauteur 750
                 
                 # CORRECTION: Récupérer le nouveau dept_info
                 dept_info = carte_avec_transformation(nom, LONGUEUR, dico_temp, maxi, mini,
@@ -141,10 +141,12 @@ def carte_avec_transformation(nom, longeur, dico_temp, maxi, mini,
     dept_info = {}
     
     if nom == 'france':
-        texte(200, 710, "Température quotidienne des départements français", 
-              taille=14, tag="titre")
+        # MODIFICATION: Titre et date fusionnés (PAS de duplication)
         annee = date[:4]
-        texte(540, 710, f"Année: {annee}", taille=14, tag="date")
+        mois = date[5:7]
+        jour = date[8:10]
+        texte(180, 710, f"Température quotidienne - {jour}/{mois}/{annee}", 
+              taille=14, tag="titre")
     
     sf, reco = fichier(nom)
     
@@ -181,12 +183,16 @@ def carte_avec_transformation(nom, longeur, dico_temp, maxi, mini,
                     y = pos_y + (dept_max_y - point[1]) * echelle
                     coo.append([x, y])
                 
+                # CORRECTION: Vérification existence tmoy
                 if code_dept in dico_temp:
-                    couleur_dept = couleur_temperature(code_dept, 'tmax', dico_temp, maxi, mini)
-                    tmoy = dico_temp[code_dept]['tmoy']
-                    id_poly = polygone(coo, couleur="black", remplissage=couleur_dept,
-                                      epaisseur=0.5, tag=f"dept_{code_dept}")
-                    dept_info[id_poly] = (code_dept, tmoy)
+                    tmoy = dico_temp[code_dept].get('tmoy')
+                    if tmoy is not None:
+                        couleur_dept = couleur_temperature(code_dept, 'tmax', dico_temp, maxi, mini)
+                        id_poly = polygone(coo, couleur="black", remplissage=couleur_dept,
+                                          epaisseur=0.5, tag=f"dept_{code_dept}")
+                        dept_info[id_poly] = (code_dept, tmoy)
+                    else:
+                        polygone(coo, couleur="black", remplissage="#cccccc", epaisseur=0.5)
                 else:
                     polygone(coo, couleur="black", remplissage="#cccccc", epaisseur=0.5)
         
@@ -200,10 +206,11 @@ def carte_avec_transformation(nom, longeur, dico_temp, maxi, mini,
                 
                 for j in range(debut, fin):
                     point = dep.points[j]
-                    x = ((point[0] - min_x) / (max_x - min_x) * longeur) * zoom + offset_x
-                    y = ((max_y - point[1]) / (max_y - min_y) * 600) * zoom + offset_y
+                    # MODIFICATION: Élargir à 580px
+                    x = ((point[0] - min_x) / (max_x - min_x) * 580) * zoom + offset_x
+                    y = ((max_y - point[1]) / (max_y - min_y) * 700) * zoom + offset_y
                     
-                    if 0 <= x <= longeur and 0 <= y <= 600:
+                    if 0 <= x <= 580 and 0 <= y <= 700:
                         visible = True
                     
                     coo.append([x, y])
@@ -215,12 +222,15 @@ def carte_avec_transformation(nom, longeur, dico_temp, maxi, mini,
                         code_final = '69'
                     
                     if code_final in dico_temp:
-                        couleur_dept = couleur_temperature(code_final, 'tmax', dico_temp, maxi, mini)
-                        tmoy = dico_temp[code_final]['tmoy']
-                        id_poly = polygone(coo, couleur="black",
-                                          remplissage=couleur_dept if nom == "france" else "",
-                                          tag=f"dept_{code_final}")
-                        dept_info[id_poly] = (code_final, tmoy)
+                        tmoy = dico_temp[code_final].get('tmoy')
+                        if tmoy is not None:
+                            couleur_dept = couleur_temperature(code_final, 'tmax', dico_temp, maxi, mini)
+                            id_poly = polygone(coo, couleur="black",
+                                              remplissage=couleur_dept if nom == "france" else "",
+                                              tag=f"dept_{code_final}")
+                            dept_info[id_poly] = (code_final, tmoy)
+                        else:
+                            polygone(coo, couleur="black", remplissage="#cccccc")
                     else:
                         polygone(coo, couleur="black", remplissage="#cccccc")
     

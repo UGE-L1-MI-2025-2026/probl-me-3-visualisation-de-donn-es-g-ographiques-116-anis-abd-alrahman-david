@@ -2,7 +2,7 @@ from fltk import *
 import shapefile
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from temperature import couleur as couleur_temperature  # CORRECTION: j'ai rénommer pour éviter conflit avec fltk
+from temperature import couleur as couleur_temperature  # CORRECTION: Renommer pour éviter conflit avec fltk
 
 def fichier(nom_fichier):
     """Ouvre et lit un fichier shapefile."""
@@ -179,8 +179,8 @@ def afficher_info_survol(dept_info):
     for obj_id in survoles:
         if obj_id in dept_info:
             code, tmoy = dept_info[obj_id]
-            # MODIFICATION: Afficher en bas à gauche avec fond blanc
-            rectangle(5, 665, 250, 700, remplissage="white", couleur="black", tag="info_survol")
-            texte(10, 670, f"Département {code} | tmoy : {tmoy:.1f}°C",
+            # MODIFICATION: Afficher en haut à gauche avec fond blanc
+            rectangle(5, 5, 250, 35, remplissage="white", couleur="black", tag="info_survol")
+            texte(10, 10, f"Département {code} | tmoy : {tmoy:.1f}°C",
                  couleur="black", taille=12, tag="info_survol")
             break
